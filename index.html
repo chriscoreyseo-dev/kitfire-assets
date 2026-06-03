@@ -364,12 +364,16 @@
   </div>
 
   <div class="form-wrap" id="form-wrap">
-    <div class="input-row">
-      <input class="input-field" type="text" id="name-input" placeholder="First name" autocomplete="given-name" />
-      <input class="input-field" type="email" id="email-input" placeholder="Your email" autocomplete="email" />
-    </div>
-    <button class="btn-join" id="join-btn" onclick="handleJoin()">🔥 Get Early Access →</button>
-    <p class="form-note">Founders pricing locked for the first 100. No spam. No pitch decks. Just the build.</p>
+    <form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="waitlist-form">
+      <input type="hidden" name="form-name" value="waitlist" />
+      <p style="display:none"><input name="bot-field" /></p>
+      <div class="input-row">
+        <input class="input-field" type="text" id="name-input" name="name" placeholder="First name" autocomplete="given-name" required />
+        <input class="input-field" type="email" id="email-input" name="email" placeholder="Your email" autocomplete="email" required />
+      </div>
+      <button class="btn-join" type="submit" id="join-btn">🔥 Get Early Access →</button>
+      <p class="form-note">Founders pricing locked for the first 100. No spam. No pitch decks. Just the build.</p>
+    </form>
   </div>
 
   <div class="success-box" id="success-box">
@@ -488,26 +492,28 @@
 </div>
 <script>
   let count = 247;
-  function handleJoin() {
-    const name = document.getElementById('name-input').value.trim();
-    const email = document.getElementById('email-input').value.trim();
-    const nameEl = document.getElementById('name-input');
-    const emailEl = document.getElementById('email-input');
-    nameEl.classList.remove('input-error');
-    emailEl.classList.remove('input-error');
-    if (!name) { nameEl.classList.add('input-error'); nameEl.focus(); return; }
-    if (!email || !email.includes('@')) { emailEl.classList.add('input-error'); emailEl.focus(); return; }
+  const form = document.getElementById('waitlist-form');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
     const btn = document.getElementById('join-btn');
     btn.disabled = true;
     btn.textContent = 'Locking your spot...';
-    setTimeout(() => {
+    const formData = new FormData(form);
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData).toString()
+    }).then(() => {
       count++;
       document.getElementById('counter').textContent = count;
       document.getElementById('success-number').textContent = '#' + count + ' on the list';
       document.getElementById('form-wrap').style.display = 'none';
       document.getElementById('success-box').classList.add('visible');
-    }, 900);
-  }
+    }).catch(() => {
+      btn.disabled = false;
+      btn.textContent = '🔥 Get Early Access →';
+    });
+  });
   let displayed = 231;
   const ticker = setInterval(() => {
     displayed += 2;
