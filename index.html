@@ -2,6 +2,531 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KitFire.AI — Get Early Access</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .bg-glow {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(204,34,0,0.20) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(255,107,26,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 20% at 20% 70%, rgba(255,179,71,0.06) 0%, transparent 60%);
+  }
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 4rem 2rem 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .logo-img {
+    width: clamp(260px, 60vw, 420px);
+    height: auto;
+    margin-bottom: 0.5rem;
+  }
+  .flame-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 1.5rem 0;
+    width: 100%;
+    max-width: 400px;
+  }
+  .flame-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,107,26,0.45), transparent);
+  }
+  .flame-icon { font-size: 18px; line-height: 1; }
+  .tagline {
+    font-size: clamp(11px, 2.5vw, 13px);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #FFB347;
+    margin-bottom: 1.25rem;
+  }
+  .headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 7vw, 54px);
+    line-height: 1.1;
+    letter-spacing: 0.03em;
+    color: #fff;
+    margin-bottom: 1.25rem;
+  }
+  .headline em {
+    font-style: normal;
+    background: linear-gradient(90deg, #FF6B1A, #FFB347);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sub {
+    font-size: clamp(15px, 3vw, 17px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+  }
+  .sub strong { color: #fff; font-weight: 500; }
+  .proof-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 100px;
+    padding: 8px 20px;
+    margin-bottom: 2.5rem;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+  .proof-dots { display: flex; }
+  .proof-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,0,0,0.5);
+    margin-left: -6px;
+  }
+  .proof-dot:first-child { margin-left: 0; background: linear-gradient(135deg, #FF6B1A, #CC2200); }
+  .proof-dot:nth-child(2) { background: linear-gradient(135deg, #FFB347, #FF6B1A); }
+  .proof-dot:nth-child(3) { background: linear-gradient(135deg, #CC2200, #800000); }
+  .proof-dot:nth-child(4) { background: linear-gradient(135deg, #FF6B1A, #FFB347); }
+  .proof-count { color: #fff; font-weight: 600; margin-left: 4px; }
+  .form-wrap { width: 100%; max-width: 480px; margin-bottom: 2rem; }
+  .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .input-field {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .input-field::placeholder { color: rgba(255,255,255,0.3); }
+  .input-field:focus { border-color: rgba(255,107,26,0.7); background: rgba(255,107,26,0.05); }
+  .input-error { border-color: rgba(255,107,26,0.8) !important; }
+  .btn-join {
+    width: 100%;
+    background: linear-gradient(135deg, #CC2200 0%, #FF6B1A 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 15px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .btn-join:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-join:active { transform: translateY(0); }
+  .btn-join:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .form-note { font-size: 12px; color: rgba(255,255,255,0.28); text-align: center; margin-top: 8px; }
+  .success-box {
+    display: none;
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255,107,26,0.08);
+    border: 1px solid rgba(255,107,26,0.3);
+    border-radius: 16px;
+    padding: 2.25rem 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .success-box.visible { display: block; }
+  .success-icon { font-size: 40px; margin-bottom: 0.75rem; }
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    background: linear-gradient(90deg, #FF6B1A, #FFB347);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.05em;
+  }
+  .success-sub { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.65; }
+  .success-number {
+    display: inline-block;
+    background: linear-gradient(135deg, #CC2200, #FF6B1A);
+    border-radius: 8px;
+    padding: 5px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin-top: 1rem;
+  }
+  .urgency {
+    background: linear-gradient(90deg, rgba(204,34,0,0.15), rgba(255,107,26,0.1), rgba(204,34,0,0.15));
+    border: 1px solid rgba(255,107,26,0.25);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 2.5rem;
+    max-width: 460px;
+    width: 100%;
+  }
+  .urgency strong { color: #FFB347; }
+  .features {
+    width: 100%;
+    max-width: 680px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 3rem;
+  }
+  .feature-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 1.25rem 1rem;
+    text-align: left;
+    transition: border-color 0.2s;
+  }
+  .feature-card:hover { border-color: rgba(255,107,26,0.35); }
+  .feature-icon { font-size: 22px; margin-bottom: 0.6rem; display: block; }
+  .feature-title { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .feature-desc { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+  .section-label-build {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,107,26,0.7);
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 520px;
+    text-align: left;
+  }
+  .markethive-block {
+    width: 100%;
+    max-width: 680px;
+    margin-bottom: 3rem;
+    background: linear-gradient(135deg, rgba(204,34,0,0.1) 0%, rgba(255,107,26,0.06) 50%, rgba(255,179,71,0.04) 100%);
+    border: 1px solid rgba(255,107,26,0.3);
+    border-radius: 18px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .markethive-block::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #CC2200, #FF6B1A, #FFB347, #FF6B1A, #CC2200);
+  }
+  .mh-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 1.5rem;
+  }
+  .mh-icon {
+    font-size: 28px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .mh-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+    letter-spacing: 0.01em;
+  }
+  .mh-sub {
+    font-size: 13px;
+    color: rgba(255,179,71,0.85);
+    line-height: 1.5;
+  }
+  .mh-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .mh-item {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,107,26,0.15);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .mh-item-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #FF6B1A;
+    margin-bottom: 5px;
+    letter-spacing: 0.02em;
+  }
+  .mh-item-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.55;
+  }
+  @media (max-width: 500px) {
+    .mh-grid { grid-template-columns: 1fr; }
+    .markethive-block { padding: 1.25rem; }
+  }
+  .belief-line {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .belief-top {
+    font-size: clamp(16px, 3.5vw, 20px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    margin-bottom: 0.35rem;
+  }
+  .belief-bottom {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(28px, 6vw, 44px);
+    letter-spacing: 0.04em;
+    background: linear-gradient(90deg, #FF6B1A, #FFB347);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+  .footer-line {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.18);
+  }
+  @media (max-width: 500px) {
+    .page { padding: 2.5rem 1.25rem 4rem; }
+    .input-row { flex-direction: column; }
+    .features { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="page">
+
+  <img class="logo-img" src="https://raw.githubusercontent.com/chriscoreyseo-dev/kitfire-assets/main/kitfire-logo.png" alt="KitFire.ai" />
+
+  <div class="flame-divider">
+    <div class="flame-line"></div>
+    <div class="flame-icon">🔥</div>
+    <div class="flame-line"></div>
+  </div>
+
+  <p class="tagline">Built with Spare Time. Launching Soon.</p>
+
+  <h1 class="headline">From idea to built.<br><em>No code. No excuses.</em></h1>
+
+  <p class="sub">
+    The <strong>AI command system</strong> that took a GED from Flint, Michigan to a live production app — overnight.<br><br>This is not a course. <strong>This is your construction project.</strong>
+  </p>
+
+  <div class="proof-bar">
+    <div class="proof-dots">
+      <div class="proof-dot"></div>
+      <div class="proof-dot"></div>
+      <div class="proof-dot"></div>
+      <div class="proof-dot"></div>
+    </div>
+    <span><span class="proof-count" id="counter">247</span> builders already on the list</span>
+  </div>
+
+  <div class="belief-line">
+    <p class="belief-top">An AI holds your hand. Guides you step by step.</p>
+    <p class="belief-bottom">You only fail if you quit.</p>
+  </div>
+
+  <div class="form-wrap" id="form-wrap">
+    <form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="waitlist-form">
+      <input type="hidden" name="form-name" value="waitlist" />
+      <p style="display:none"><input name="bot-field" /></p>
+      <div class="input-row">
+        <input class="input-field" type="text" id="name-input" name="name" placeholder="First name" autocomplete="given-name" required />
+        <input class="input-field" type="email" id="email-input" name="email" placeholder="Your email" autocomplete="email" required />
+      </div>
+      <button class="btn-join" type="submit" id="join-btn">🔥 Get Early Access →</button>
+      <p class="form-note">Founders pricing locked for the first 100. No spam. No pitch decks. Just the build.</p>
+    </form>
+  </div>
+
+  <div class="success-box" id="success-box">
+    <div class="success-icon">🔥</div>
+    <div class="success-title">You're in.</div>
+    <p class="success-sub">You just claimed your spot on the KitFire waitlist.<br>We'll reach out personally when the doors open.</p>
+    <div class="success-number" id="success-number">Spot secured. 🔥</div>
+  </div>
+
+  <div class="urgency">
+    ⚡ <strong>Founders Edition — First 100 only.</strong> $397. Locked forever. Once capacity is hit, it closes permanently.
+  </div>
+
+  <div class="section-label-build">What you will build</div>
+  <div class="features">
+    <div class="feature-card">
+      <span class="feature-icon">🗄️</span>
+      <div class="feature-title">SQL Database</div>
+      <div class="feature-desc">Your own live database. Tables, schemas, relationships — structured for your product from day one.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚙️</span>
+      <div class="feature-title">Backend Server</div>
+      <div class="feature-desc">A real Node/Express backend running on Render. APIs, routes, protected endpoints — yours.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🤖</span>
+      <div class="feature-title">AI Wired Into Your Site</div>
+      <div class="feature-desc">Live AI responses built into your product — not a chatbot widget. Your model, your rules, your brand.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔐</span>
+      <div class="feature-title">Auth System</div>
+      <div class="feature-desc">Login, signup, password protection, user sessions — Supabase auth wired to your product end to end.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">💳</span>
+      <div class="feature-title">Payment Paywall</div>
+      <div class="feature-desc">Stripe integrated. Subscription or one-time. The 10 minutes between you and your first dollar.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🌐</span>
+      <div class="feature-title">Live Domain</div>
+      <div class="feature-desc">Your product on your domain. DNS configured, SSL live, and pointing at your real deployed app.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📄</span>
+      <div class="feature-title">Sales Page</div>
+      <div class="feature-desc">A conversion-built sales page for your product — copy, structure, and CTA — ready to send traffic to.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📧</span>
+      <div class="feature-title">Email System</div>
+      <div class="feature-desc">Automated email sequences wired to your product — onboarding, follow-up, transactional — all live.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔗</span>
+      <div class="feature-title">Affiliate Program</div>
+      <div class="feature-desc">Referral links, tracking, commission logic — a full affiliate structure built into your back office.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <div class="feature-title">6 AI Agents</div>
+      <div class="feature-desc">Customer Service, Marketing, Sales, Ops, Research, Accounting — each one wired and ready.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🗺️</span>
+      <div class="feature-title">The Minefield Map</div>
+      <div class="feature-desc">10 documented real errors with exact fixes. When something breaks at 2am — the answer is already here.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📦</span>
+      <div class="feature-title">GitHub Repo</div>
+      <div class="feature-desc">Your full codebase version-controlled on GitHub. Yours to own, fork, and build on forever.</div>
+    </div>
+  </div>
+
+  <div class="markethive-block">
+    <div class="mh-header">
+      <span class="mh-icon">🔥</span>
+      <div>
+        <div class="mh-title">Markethive Integration</div>
+        <div class="mh-sub">You will build your own funnels — exactly like this one. Markethive handles the back end marketing and tracking.</div>
+      </div>
+    </div>
+    <div class="mh-grid">
+      <div class="mh-item">
+        <div class="mh-item-title">Webhook on Signup</div>
+        <div class="mh-item-desc">The moment someone signs up through a referral link, Markethive fires a webhook — email, affiliate code, timestamp — straight into your database. Automatic. Zero manual work.</div>
+      </div>
+      <div class="mh-item">
+        <div class="mh-item-title">Affiliate Link Engine</div>
+        <div class="mh-item-desc">Every affiliate gets a unique tracked link. Clicks, signups, and commissions log automatically. You build the referral program once — Markethive runs the tracking.</div>
+      </div>
+      <div class="mh-item">
+        <div class="mh-item-title">Email Delivery — 99.9% Inbox</div>
+        <div class="mh-item-desc">Amazon SES + IronPort certified delivery. Under 2 minutes from trigger to inbox. Not a newsletter tool — a precision delivery system wired to your product actions.</div>
+      </div>
+      <div class="mh-item">
+        <div class="mh-item-title">Funnel Duplication</div>
+        <div class="mh-item-desc">When Mary signs up through John's link, she instantly gets a full copy of the funnel — her own affiliate links, her own autoresponder — and routes back to your back office. The network grows itself.</div>
+      </div>
+      <div class="mh-item">
+        <div class="mh-item-title">150,000 Member Network</div>
+        <div class="mh-item-desc">180+ countries. Entrepreneurs and internet marketers already on the platform. You build the integration — you plug into the distribution.</div>
+      </div>
+      <div class="mh-item">
+        <div class="mh-item-title">Social Proof Layer</div>
+        <div class="mh-item-desc">Live activity feed that shows real signups happening in real time on your funnel pages. The kind of social proof that costs thousands to build — included.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-line">The ceiling was never there. — KitFire.AI Inc. © 2026</p>
+
+</div>
+<script>
+  let count = 247;
+  const form = document.getElementById('waitlist-form');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('join-btn');
+    btn.disabled = true;
+    btn.textContent = 'Locking your spot...';
+    const formData = new FormData(form);
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData).toString()
+    }).then(() => {
+      count++;
+      document.getElementById('counter').textContent = count;
+      document.getElementById('success-number').textContent = 'Spot secured. 🔥';
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('success-box').classList.add('visible');
+    }).catch(() => {
+      btn.disabled = false;
+      btn.textContent = '🔥 Get Early Access →';
+    });
+  });
+  let displayed = 231;
+  const ticker = setInterval(() => {
+    displayed += 2;
+    if (displayed >= 247) { displayed = 247; clearInterval(ticker); }
+    document.getElementById('counter').textContent = displayed;
+  }, 60);
+</script>
+</body>
+</html>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KitFire.AI — Get Early Access</title>
