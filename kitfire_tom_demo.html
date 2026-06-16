@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KitFire — The Forge for MarketHive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ DESIGN TOKENS ============ */
+:root {
+  --bg-deep:        #0A1626;
+  --bg-base:        #0D1B2A;
+  --bg-surface:     #11243A;
+  --bg-surface-hi:  #15314E;
+  --hairline:       rgba(255,255,255,0.08);
+  --hairline-warm:  rgba(255,107,26,0.18);
+  --text-primary:   #F0EBE3;
+  --text-secondary: #B9C3CC;
+  --text-muted:     #6B7B8C;
+  --ember:          #FF6B1A;
+  --ember-soft:     #FF8A47;
+  --ember-glow:     rgba(255,107,26,0.35);
+  --ember-trace:    rgba(255,107,26,0.55);
+  --cool-mark:      #4ECCA3;
+  --radius-sm:      4px;
+  --radius:         8px;
+  --radius-lg:      14px;
+  --shadow-glow:    0 0 40px -10px var(--ember-glow);
+  --max-width:      1180px;
+}
+
+/* ============ RESET / BASE ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Blueprint grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 80%);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255,107,26,0.06), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 28px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============ TYPOGRAPHY ============ */
+.display-xl, .display-lg, .display-md {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+.display-xl { font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 500; }
+.display-lg { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 500; }
+.display-md { font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 500; }
+
+.serif-ital {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ember);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--ember);
+}
+
+/* ============ HERO ============ */
+.hero {
+  padding: 80px 0 60px;
+  position: relative;
+}
+
+.hero-eyebrow {
+  margin-bottom: 28px;
+}
+
+.hero-title {
+  margin-bottom: 24px;
+  max-width: 18ch;
+}
+
+.hero-title em {
+  color: var(--ember);
+  font-style: italic;
+}
+
+.hero-sub {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  color: var(--text-secondary);
+  max-width: 56ch;
+  line-height: 1.6;
+  margin-bottom: 44px;
+}
+
+/* ============ CTA STACK ============ */
+.cta-stack {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 720px;
+}
+
+@media (max-width: 640px) {
+  .cta-stack { grid-template-columns: 1fr; }
+}
+
+.cta-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--hairline);
+  padding: 24px 26px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-card:hover {
+  border-color: var(--ember);
+  background: var(--bg-surface-hi);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+.cta-card:hover .cta-arrow {
+  transform: translateX(4px);
+  color: var(--ember);
+}
+.cta-card:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 2px;
+}
+
+.cta-card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.cta-card-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cta-arrow {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  transition: all 0.3s;
+}
+.cta-card-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* ============ INTAKE FORM ============ */
+.intake {
+  margin-top: 72px;
+  display: none;
+  scroll-margin-top: 40px;
+}
+.intake.active { display: block; animation: fadeUp 0.6s ease; }
+
+.intake-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  max-width: 760px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ember);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.field-label .n {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.field-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-left: 32px;
+}
+
+.field input,
+.field textarea {
+  background: var(--bg-surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: all 0.2s;
+  width: 100%;
+  resize: vertical;
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--ember);
+  background: var(--bg-surface-hi);
+  box-shadow: 0 0 0 3px var(--ember-glow);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.submit-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-forge {
+  background: var(--ember);
+  color: #1a0d05;
+  border: none;
+  padding: 16px 28px;
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn-forge:hover {
+  background: var(--ember-soft);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px -8px var(--ember-glow);
+}
+.btn-forge:active { transform: translateY(0); }
+.btn-forge:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--hairline);
+  padding: 16px 22px;
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+/* ============ FORGE / OUTPUT ============ */
+.forge {
+  margin-top: 88px;
+  display: none;
+  scroll-margin-top: 20px;
+}
+.forge.active { display: block; }
+
+.forge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.forge-input-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summary-line {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.summary-line .k {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  min-width: 100px;
+}
+.summary-line .v {
+  color: var(--text-primary);
+}
+
+.forge-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-link {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 4px;
+}
+.btn-link:hover { color: var(--ember); text-decoration-color: var(--ember); }
+
+/* ============ OUTPUT PANELS ============ */
+.panels {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s, transform 0.5s, border-color 0.6s, box-shadow 0.6s;
+}
+
+.panel.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.panel.building {
+  border-color: var(--ember);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Animated border trace */
+.panel.building::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius-lg);
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    transparent 0%,
+    var(--ember-trace) 10%,
+    transparent 20%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  animation: rotateTrace 1.5s linear infinite;
+  pointer-events: none;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotateTrace {
+  to { --angle: 360deg; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hairline);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.panel-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panel-id .num {
+  color: var(--ember);
+  margin-right: 8px;
+}
+
+.panel-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.panel-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--ember);
+  border-radius: 50%;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.panel.complete .panel-status {
+  color: var(--cool-mark);
+}
+.panel.complete .panel-status::before {
+  background: var(--cool-mark);
+  animation: none;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.panel-body {
+  display: none;
+}
+.panel.complete .panel-body { display: block; animation: fadeUp 0.6s ease; }
+
+.panel-loading {
+  display: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 24px 0;
+  min-height: 80px;
+}
+.panel.building .panel-loading { display: block; }
+.panel.building .panel-body { display: none; }
+
+.loading-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp 0.4s ease forwards;
+}
+.loading-line .check {
+  color: var(--ember);
+  font-weight: 700;
+}
+.loading-line:nth-child(1) { animation-delay: 0.1s; }
+.loading-line:nth-child(2) { animation-delay: 0.5s; }
+.loading-line:nth-child(3) { animation-delay: 0.9s; }
+
+/* ============ PANEL CONTENT STYLES ============ */
+.kv-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.kv-row:last-child { border-bottom: none; }
+.kv-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-top: 3px;
+}
+.kv-val {
+  color: var(--text-primary);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 640px) {
+  .kv-row { grid-template-columns: 1fr; gap: 6px; }
+}
+
+/* Browser mockup */
+.browser {
+  background: #060d18;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.browser-bar {
+  background: #0a1422;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.browser-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+}
+.browser-url {
+  margin-left: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.04);
+  padding: 4px 10px;
+  border-radius: 4px;
+  flex: 1;
+}
+.browser-body {
+  padding: 32px 28px;
+}
+
+.splash-hero {
+  text-align: center;
+  padding: 24px 0 32px;
+}
+.splash-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 14px;
+}
+.splash-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+  max-width: 22ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.splash-title em { color: var(--ember); font-style: italic; }
+.splash-sub {
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  max-width: 48ch;
+  margin: 0 auto 24px;
+}
+.splash-cta {
+  display: inline-block;
+  background: var(--ember);
+  color: #1a0d05;
+  padding: 12px 26px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Capture page mockup */
+.capture-mock {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 32px;
+  padding: 8px 0;
+}
+@media (max-width: 700px) {
+  .capture-mock { grid-template-columns: 1fr; }
+}
+.capture-left h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.capture-left h4 em { color: var(--ember); font-style: italic; }
+.capture-bullets {
+  list-style: none;
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.capture-bullets li {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  padding-left: 22px;
+  position: relative;
+}
+.capture-bullets li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--ember);
+}
+
+.capture-form {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: 22px;
+}
+.capture-form-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.capture-form-input {
+  background: var(--bg-deep);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+.capture-form-btn {
+  background: var(--ember);
+  color: #1a0d05;
+  padding: 11px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Email sequence */
+.email-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+@media (max-width: 880px) {
+  .email-grid { grid-template-columns: 1fr; }
+}
+
+.email-col {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: 18px;
+}
+.email-col-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 6px;
+}
+.email-col-sub {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+}
+.email-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.email-list li {
+  padding: 9px 0;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.email-list li:first-child { border-top: none; padding-top: 4px; }
+.email-list li .day {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  min-width: 36px;
+  letter-spacing: 0.08em;
+}
+
+/* ============ CLOSING / NEXT ============ */
+.aftermath {
+  margin-top: 90px;
+  margin-bottom: 80px;
+  padding: 50px 0 0;
+  border-top: 1px solid var(--hairline);
+  display: none;
+}
+.aftermath.active { display: block; animation: fadeUp 0.6s ease; }
+
+.aftermath-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+@media (max-width: 880px) {
+  .aftermath-grid { grid-template-columns: 1fr; gap: 30px; }
+}
+
+.aftermath h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 18px;
+  max-width: 18ch;
+}
+.aftermath h2 em { color: var(--ember); font-style: italic; }
+.aftermath p {
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  max-width: 50ch;
+  margin-bottom: 14px;
+}
+
+.numbers {
+  background: var(--bg-surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
+.numbers-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+.numbers table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.numbers td {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 0.92rem;
+}
+.numbers tr:last-child td { border-bottom: none; }
+.numbers td:first-child {
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+}
+.numbers td:nth-child(2) {
+  text-align: right;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.numbers td:nth-child(3) {
+  text-align: right;
+  color: var(--ember);
+  font-weight: 600;
+  padding-left: 20px;
+}
+
+/* ============ FOOTER ============ */
+footer {
+  border-top: 1px solid var(--hairline);
+  padding: 32px 0 40px;
+  margin-top: 60px;
+}
+.footer-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.footer-mark {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+.footer-mark em { color: var(--ember); font-style: italic; }
+.footer-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.drakon-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.drakon-mark::before {
+  content: '◆';
+  color: var(--ember);
+}
+
+/* ============ ACCESSIBILITY ============ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .panel.building::before { animation: none; }
+}
+
+/* selection */
+::selection {
+  background: var(--ember);
+  color: #1a0d05;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="eyebrow hero-eyebrow">A live demo &nbsp;·&nbsp; built by KitFire for MarketHive</div>
+    <h1 class="display-xl hero-title">The forge for <em>founding members.</em></h1>
+    <p class="hero-sub">
+      Tell us your business. We build everything you need — group, splash page, capture page, and 30 emails — to land your first paying client inside MarketHive today. Watch it materialize below.
+    </p>
+
+    <div class="cta-stack">
+      <button class="cta-card" id="cta-silver-spray" type="button">
+        <span class="cta-card-label">Path 01 &nbsp;/ &nbsp;Instant</span>
+        <span class="cta-card-title">See Silver Spray <span class="cta-arrow">→</span></span>
+        <span class="cta-card-meta">Pre-built example. Real Michigan boat dealer. Click and watch the system materialize.</span>
+      </button>
+      <button class="cta-card" id="cta-build-mine" type="button">
+        <span class="cta-card-label">Path 02 &nbsp;/ &nbsp;Custom</span>
+        <span class="cta-card-title">Build mine <span class="cta-arrow">→</span></span>
+        <span class="cta-card-meta">Answer three questions. See your group, pages, and emails in under thirty seconds.</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ INTAKE ============ -->
+  <section class="intake" id="intake">
+    <div class="eyebrow" style="margin-bottom: 24px;">Step one &nbsp;·&nbsp; three questions</div>
+    <h2 class="display-lg" style="margin-bottom: 32px;">Tell us what you're building.</h2>
+
+    <form class="intake-grid" id="intake-form">
+      <div class="field">
+        <label class="field-label" for="f-sell"><span class="n">01</span> What do you sell?</label>
+        <input id="f-sell" name="sell" type="text" placeholder="e.g. Premium wakesurf boats ($150K–$300K)" autocomplete="off" />
+        <span class="field-hint">Be specific. Product, price band, key feature.</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="f-buyer"><span class="n">02</span> Who's your buyer?</label>
+        <input id="f-buyer" name="buyer" type="text" placeholder="e.g. Michigan lake homeowners 35–65, household income $300K+" autocomplete="off" />
+        <span class="field-hint">Demographics, geography, income, life stage — whatever defines them.</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="f-result"><span class="n">03</span> What result do they want?</label>
+        <input id="f-result" name="result" type="text" placeholder="e.g. Sell one more boat per month from existing inquiry traffic" autocomplete="off" />
+        <span class="field-hint">The outcome that makes them whip out a credit card. Concrete, measurable.</span>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="btn-forge">
+          <span>Forge the system</span>
+          <span>→</span>
+        </button>
+        <button type="button" class="btn-secondary" id="btn-cancel">Back</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ FORGE / OUTPUT ============ -->
+  <section class="forge" id="forge">
+    <div class="forge-header">
+      <div class="forge-input-summary" id="input-summary">
+        <!-- filled by JS -->
+      </div>
+      <div class="forge-actions">
+        <button class="btn-link" id="btn-restart" type="button">Try another</button>
+      </div>
+    </div>
+
+    <div class="panels" id="panels">
+
+      <!-- PANEL 1: GROUP -->
+      <article class="panel" data-panel="1">
+        <div class="panel-header">
+          <div>
+            <div class="panel-id"><span class="num">01</span> MarketHive group</div>
+            <div class="panel-title" style="margin-top:6px;">Your community shell</div>
+          </div>
+          <div class="panel-status">Forging</div>
+        </div>
+        <div class="panel-loading">
+          <div class="loading-line"><span class="check">▸</span> Parsing buyer profile for niche signal...</div>
+          <div class="loading-line"><span class="check">▸</span> Selecting category and tone register...</div>
+          <div class="loading-line"><span class="check">▸</span> Naming the room and writing description...</div>
+        </div>
+        <div class="panel-body" id="body-group"></div>
+      </article>
+
+      <!-- PANEL 2: SPLASH -->
+      <article class="panel" data-panel="2">
+        <div class="panel-header">
+          <div>
+            <div class="panel-id"><span class="num">02</span> Splash page</div>
+            <div class="panel-title" style="margin-top:6px;">The room's front door</div>
+          </div>
+          <div class="panel-status">Forging</div>
+        </div>
+        <div class="panel-loading">
+          <div class="loading-line"><span class="check">▸</span> Drafting hero promise against the result...</div>
+          <div class="loading-line"><span class="check">▸</span> Pulling proof signal from the niche...</div>
+          <div class="loading-line"><span class="check">▸</span> Composing the call to action...</div>
+        </div>
+        <div class="panel-body" id="body-splash"></div>
+      </article>
+
+      <!-- PANEL 3: CAPTURE -->
+      <article class="panel" data-panel="3">
+        <div class="panel-header">
+          <div>
+            <div class="panel-id"><span class="num">03</span> Capture page</div>
+            <div class="panel-title" style="margin-top:6px;">Where strangers become subscribers</div>
+          </div>
+          <div class="panel-status">Forging</div>
+        </div>
+        <div class="panel-loading">
+          <div class="loading-line"><span class="check">▸</span> Sharpening the lead magnet into three benefits...</div>
+          <div class="loading-line"><span class="check">▸</span> Choosing form copy and friction-reduction...</div>
+          <div class="loading-line"><span class="check">▸</span> Wiring the autoresponder trigger...</div>
+        </div>
+        <div class="panel-body" id="body-capture"></div>
+      </article>
+
+      <!-- PANEL 4: EMAILS -->
+      <article class="panel" data-panel="4">
+        <div class="panel-header">
+          <div>
+            <div class="panel-id"><span class="num">04</span> Autoresponder · 10 emails × 3 hooks</div>
+            <div class="panel-title" style="margin-top:6px;">Thirty subject lines, three brains</div>
+          </div>
+          <div class="panel-status">Forging</div>
+        </div>
+        <div class="panel-loading">
+          <div class="loading-line"><span class="check">▸</span> Generating Story-hook sequence (narrative arc)...</div>
+          <div class="loading-line"><span class="check">▸</span> Generating Data-hook sequence (proof arc)...</div>
+          <div class="loading-line"><span class="check">▸</span> Generating Contrarian-hook sequence (challenger arc)...</div>
+        </div>
+        <div class="panel-body" id="body-emails"></div>
+      </article>
+
+    </div>
+
+    <!-- ============ AFTERMATH ============ -->
+    <section class="aftermath" id="aftermath">
+      <div class="aftermath-grid">
+        <div>
+          <h2>That took <em>twenty-six seconds.</em></h2>
+          <p>
+            Inside MarketHive, this same system arrives the moment a founding member completes onboarding. No agency, no copywriter, no $5K build fee. Every output is signed and tracked under DRAKON, so IP stays with the platform.
+          </p>
+          <p>
+            Polsia hit ten million ARR in ninety days selling this category to people who had to build their own platform from scratch. MarketHive already has the platform. The question isn't whether to ship it. It's how quickly.
+          </p>
+        </div>
+        <aside class="numbers">
+          <div class="numbers-title">Founding-member math</div>
+          <table>
+            <tr><td>50 seats</td><td>$2,350 / mo</td><td>$940</td></tr>
+            <tr><td>200 seats</td><td>$9,400 / mo</td><td>$3,760</td></tr>
+            <tr><td>400 seats</td><td>$18,800 / mo</td><td>$7,520</td></tr>
+            <tr><td>1,000 seats</td><td>$47,000 / mo</td><td>$18,800</td></tr>
+          </table>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:14px;line-height:1.6;">
+            $47 seat &nbsp;·&nbsp; 60 / 40 split &nbsp;·&nbsp; KitFire share shown
+          </div>
+        </aside>
+      </div>
+    </section>
+
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-mark">Kit<em>Fire</em></div>
+      <div class="footer-meta drakon-mark">DRAKON-protected output &nbsp;·&nbsp; Patent App #64/084,822</div>
+      <div class="footer-meta">The ceiling was never there.</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   KITFIRE DEMO ENGINE
+   Smart template synthesis, no API calls.
+   ============================================================ */
+
+// ---------- UTILITY ----------
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+const cap = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+const titleCase = (s) => (s||'').split(' ').map(w => w.length > 3 ? cap(w) : w.toLowerCase()).map((w,i) => i === 0 ? cap(w) : w).join(' ');
+
+function pickByHash(arr, str) {
+  // deterministic pick based on input
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+  return arr[Math.abs(h) % arr.length];
+}
+
+// ---------- NICHE INFERENCE ----------
+function inferCategory(sell, buyer) {
+  const text = (sell + ' ' + buyer).toLowerCase();
+  if (/boat|yacht|marine|wakesurf|wake|nautique|jet ski/.test(text)) return 'Recreation & Lifestyle';
+  if (/real estate|realtor|broker|property|home|listing/.test(text)) return 'Real Estate';
+  if (/restaurant|food|chef|cafe|catering|cuisine/.test(text)) return 'Food & Beverage';
+  if (/coach|consult|advisor|mentor|trainer/.test(text)) return 'Coaching & Consulting';
+  if (/saas|software|app|platform|api/.test(text)) return 'Technology & SaaS';
+  if (/agency|marketing|seo|ads|growth/.test(text)) return 'Marketing & Agency';
+  if (/health|fitness|wellness|nutrition|gym/.test(text)) return 'Health & Wellness';
+  if (/course|coaching|education|teach|train/.test(text)) return 'Education & Training';
+  if (/dental|medical|doctor|clinic|chiropractor/.test(text)) return 'Healthcare';
+  if (/law|attorney|legal|paralegal/.test(text)) return 'Legal Services';
+  if (/contractor|construction|hvac|plumb|roof|electric/.test(text)) return 'Trades & Construction';
+  if (/finance|wealth|invest|crypto|trade/.test(text)) return 'Finance & Investing';
+  return 'Business Development';
+}
+
+function nicheNoun(sell) {
+  const t = sell.toLowerCase();
+  if (/boat|wakesurf|nautique/.test(t)) return 'boat sales';
+  if (/real estate|property/.test(t)) return 'property sales';
+  if (/saas|software/.test(t)) return 'software sales';
+  if (/agency|marketing/.test(t)) return 'agency growth';
+  if (/coach|consult/.test(t)) return 'high-ticket coaching';
+  if (/restaurant|food/.test(t)) return 'restaurant operations';
+  return 'high-ticket sales';
+}
+
+function shortBuyer(buyer) {
+  // Extract the first concrete noun phrase
+  const cleaned = buyer.replace(/[,;].*$/, '').trim();
+  return cleaned.length > 60 ? cleaned.substring(0, 60).trim() + '...' : cleaned;
+}
+
+function painSignal(sell, buyer) {
+  const t = (sell + ' ' + buyer).toLowerCase();
+  if (/boat|wakesurf/.test(t)) return 'missed phone calls and broken lead capture';
+  if (/real estate/.test(t)) return 'leads going cold before the second touch';
+  if (/restaurant/.test(t)) return 'phantom reservations and walk-in chaos';
+  if (/coach|consult/.test(t)) return 'sales calls with people who never had the budget';
+  if (/saas|software/.test(t)) return 'free-trial users who never convert';
+  if (/agency/.test(t)) return 'client churn after month three';
+  return 'leads that ghost after the first email';
+}
+
+// ---------- TEMPLATE GENERATION ----------
+function generate(inputs) {
+  const { sell, buyer, result } = inputs;
+  const cat = inferCategory(sell, buyer);
+  const niche = nicheNoun(sell);
+  const buyerShort = shortBuyer(buyer);
+  const pain = painSignal(sell, buyer);
+  const sellShort = sell.length > 70 ? sell.substring(0, 70).trim() : sell;
+
+  // GROUP NAME PATTERNS
+  const groupNames = [
+    `The ${titleCase(niche)} Inner Circle`,
+    `${titleCase(niche)} Mastermind`,
+    `The Closing Room`,
+    `Founders Who Sell ${capFirstWord(sell)}`,
+    `${titleCase(niche)} — Operator Cohort`,
+  ];
+  const groupName = pickByHash(groupNames, sell + buyer);
+
+  const groupTagline = `Where ${buyerShort.toLowerCase()} become repeat customers.`;
+  const groupDesc = `A working community for operators who want to ${lowercaseFirst(result)}. We share systems, scripts, and case studies — no theory, no fluff. Every member ships their own version of what works in this room.`;
+
+  // SPLASH HERO — use the result as the headline directly, sub adds the without-clause
+  const resultClean = cap(result.trim().replace(/\.$/, ''));
+  const splashTitle = `<em>${resultClean}.</em>`;
+  const splashSub = `Built for ${buyerShort.toLowerCase()} — without ${pain}, without an agency on retainer, without burning ad spend. The whole system arrives the day you join.`;
+  const splashCta = `Get inside the room`;
+
+  // CAPTURE PAGE
+  const captureHeadline = `Free for founding members. <em>${resultClean}.</em>`;
+  const captureBullets = [
+    `The exact ${niche.split(' ')[0]} system that fixed ${pain} for one operator in 14 days`,
+    `Three subject lines that pull ${buyerShort.toLowerCase().split(' ').slice(0,3).join(' ')} off the fence`,
+    `A one-page diagnostic to find which of your inquiries are quietly bleeding revenue`,
+  ];
+
+  // EMAIL SEQUENCES — 10 subjects × 3 hooks
+  const emails = generateEmailSequence(sell, buyer, result, pain, niche);
+
+  return {
+    category: cat,
+    groupName,
+    groupTagline,
+    groupDesc,
+    splashTitle,
+    splashSub,
+    splashCta,
+    captureHeadline,
+    captureBullets,
+    emails,
+  };
+}
+
+function capFirstWord(s) {
+  if (!s) return '';
+  const w = s.split(' ').slice(0,2).join(' ');
+  return cap(w.toLowerCase());
+}
+
+function lowercaseFirst(s) {
+  if (!s) return '';
+  return s.charAt(0).toLowerCase() + s.slice(1).replace(/\.$/, '');
+}
+
+function generateEmailSequence(sell, buyer, result, pain, niche) {
+  const buyerShort = shortBuyer(buyer).toLowerCase();
+  const resultLow = lowercaseFirst(result);
+  const sellWord = (sell.split(' ')[0] || 'product').toLowerCase();
+
+  // STORY arc — narrative, case-study driven
+  const storyArc = [
+    { day: 'Day 0', sub: `The day the inquiry came in at 9:47 PM` },
+    { day: 'Day 1', sub: `What three operators did when ${pain.split(' ').slice(0,3).join(' ')} cost them a sale` },
+    { day: 'Day 2', sub: `She thought it was the price. It wasn't.` },
+    { day: 'Day 3', sub: `The text message that closed a $${sellPriceGuess(sell)} deal in 6 minutes` },
+    { day: 'Day 5', sub: `From "just looking" to signed paperwork — without a phone call` },
+    { day: 'Day 7', sub: `Why your best ${niche} inquiry ghosted you (it's not what you think)` },
+    { day: 'Day 10', sub: `The follow-up cadence that doubled ${niche} close rate at one dealership` },
+    { day: 'Day 14', sub: `Real story: how one operator went from 2 closes a month to 7` },
+    { day: 'Day 21', sub: `The conversation that turned a tire-kicker into a referral source` },
+    { day: 'Day 30', sub: `One year later — what the system did to her revenue` },
+  ];
+
+  // DATA arc — proof, math, numbers
+  const dataArc = [
+    { day: 'Day 0', sub: `87% of ${niche} inquiries are lost in the first hour. Here's the math.` },
+    { day: 'Day 1', sub: `Why ${buyerShort.split(' ').slice(0,3).join(' ')} convert 3.4× higher after 9 PM` },
+    { day: 'Day 2', sub: `The exact response time that doubles ${niche} close rate` },
+    { day: 'Day 3', sub: `$${sellPriceGuess(sell)} per missed call — the real cost of ${pain.split(' ').slice(0,2).join(' ')}` },
+    { day: 'Day 5', sub: `The 14-second test that predicts every ${niche} buyer's intent` },
+    { day: 'Day 7', sub: `Three numbers every operator should be tracking (most track zero)` },
+    { day: 'Day 10', sub: `Why 60% of "ready to buy" inquiries are actually 90 days out` },
+    { day: 'Day 14', sub: `The conversion data behind ${resultLow}` },
+    { day: 'Day 21', sub: `What happens to revenue when response time drops from 4 hours to 4 minutes` },
+    { day: 'Day 30', sub: `The dashboard ${niche} operators wish they'd built five years ago` },
+  ];
+
+  // CONTRARIAN arc — challenger, pattern-break
+  const contraArc = [
+    { day: 'Day 0', sub: `Stop sending follow-up emails. Do this instead.` },
+    { day: 'Day 1', sub: `Everyone says "be patient with leads." They're wrong.` },
+    { day: 'Day 2', sub: `Why your CRM is making you worse at sales` },
+    { day: 'Day 3', sub: `The "polite" follow-up that's quietly killing your close rate` },
+    { day: 'Day 5', sub: `Stop optimizing your funnel. Fix this one conversation.` },
+    { day: 'Day 7', sub: `What if your best ${niche} leads aren't on your list?` },
+    { day: 'Day 10', sub: `The advice every consultant gives ${niche} operators — and why it backfires` },
+    { day: 'Day 14', sub: `You don't have a lead problem. You have a response problem.` },
+    { day: 'Day 21', sub: `The contrarian move that ${resultLow} for one operator last quarter` },
+    { day: 'Day 30', sub: `Everything you've been told about ${niche} email is wrong` },
+  ];
+
+  return { story: storyArc, data: dataArc, contra: contraArc };
+}
+
+function sellPriceGuess(sell) {
+  const m = sell.match(/\$([0-9.,KM]+)/i);
+  if (m) {
+    const v = m[1].toUpperCase();
+    if (v.includes('M')) return '500,000';
+    if (v.includes('K')) {
+      const n = parseInt(v) || 50;
+      return (n * 1000).toLocaleString();
+    }
+    return v;
+  }
+  return '12,400';
+}
+
+// ---------- RENDER OUTPUTS ----------
+function renderGroup(d) {
+  $('#body-group').innerHTML = `
+    <div class="kv-row">
+      <div class="kv-key">Name</div>
+      <div class="kv-val" style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:500;letter-spacing:-0.01em;">${d.groupName}</div>
+    </div>
+    <div class="kv-row">
+      <div class="kv-key">Tagline</div>
+      <div class="kv-val serif-ital">${d.groupTagline}</div>
+    </div>
+    <div class="kv-row">
+      <div class="kv-key">Category</div>
+      <div class="kv-val">${d.category}</div>
+    </div>
+    <div class="kv-row">
+      <div class="kv-key">Description</div>
+      <div class="kv-val">${d.groupDesc}</div>
+    </div>
+  `;
+}
+
+function renderSplash(d) {
+  $('#body-splash').innerHTML = `
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+        <span class="browser-url">markethive.com/group/${slugify(d.groupName)}</span>
+      </div>
+      <div class="browser-body">
+        <div class="splash-hero">
+          <div class="splash-eyebrow">${d.groupName}</div>
+          <h3 class="splash-title">${d.splashTitle}</h3>
+          <p class="splash-sub">${d.splashSub}</p>
+          <span class="splash-cta">${d.splashCta} &nbsp;→</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCapture(d) {
+  $('#body-capture').innerHTML = `
+    <div class="capture-mock">
+      <div class="capture-left">
+        <h4>${d.captureHeadline}</h4>
+        <ul class="capture-bullets">
+          ${d.captureBullets.map(b => `<li>${b}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="capture-form">
+        <div class="capture-form-label">Where should we send it?</div>
+        <div class="capture-form-input">your@email.com</div>
+        <div class="capture-form-btn">Send me the playbook</div>
+        <div style="font-size:0.74rem;color:var(--text-muted);margin-top:14px;line-height:1.5;">
+          No spam. Unsubscribe with one click. Tracked via DRAKON.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderEmails(d) {
+  const { story, data, contra } = d.emails;
+  const list = (arr) => arr.map(e => `<li><span class="day">${e.day}</span><span>${e.sub}</span></li>`).join('');
+  $('#body-emails').innerHTML = `
+    <div class="email-grid">
+      <div class="email-col">
+        <div class="email-col-header">Hook A · Story</div>
+        <div class="email-col-sub">For readers who follow a narrative arc.</div>
+        <ul class="email-list">${list(story)}</ul>
+      </div>
+      <div class="email-col">
+        <div class="email-col-header">Hook B · Data</div>
+        <div class="email-col-sub">For readers who buy when the math is clean.</div>
+        <ul class="email-list">${list(data)}</ul>
+      </div>
+      <div class="email-col">
+        <div class="email-col-header">Hook C · Contrarian</div>
+        <div class="email-col-sub">For readers tired of the conventional wisdom.</div>
+        <ul class="email-list">${list(contra)}</ul>
+      </div>
+    </div>
+  `;
+}
+
+function slugify(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 28);
+}
+
+// ---------- INPUT SUMMARY ----------
+function renderSummary(inputs) {
+  $('#input-summary').innerHTML = `
+    <div class="eyebrow">Input received &nbsp;·&nbsp; system forging</div>
+    <div class="summary-line" style="margin-top:12px;"><span class="k">Sells</span><span class="v">${escapeHtml(inputs.sell)}</span></div>
+    <div class="summary-line"><span class="k">Buyer</span><span class="v">${escapeHtml(inputs.buyer)}</span></div>
+    <div class="summary-line"><span class="k">Result</span><span class="v">${escapeHtml(inputs.result)}</span></div>
+  `;
+}
+
+function escapeHtml(s) {
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ---------- ANIMATION ORCHESTRATION ----------
+async function runForge(inputs) {
+  const data = generate(inputs);
+  renderSummary(inputs);
+
+  // Pre-render hidden bodies
+  renderGroup(data);
+  renderSplash(data);
+  renderCapture(data);
+  renderEmails(data);
+
+  // Show forge section
+  $('#forge').classList.add('active');
+  $('#intake').classList.remove('active');
+  $('#forge').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  await sleep(400);
+
+  const panels = ['1', '2', '3', '4'];
+  for (const id of panels) {
+    const panel = document.querySelector(`.panel[data-panel="${id}"]`);
+    panel.classList.add('visible', 'building');
+    await sleep(2200);
+    panel.classList.remove('building');
+    panel.classList.add('complete');
+    const status = panel.querySelector('.panel-status');
+    status.textContent = 'Complete';
+    await sleep(550);
+  }
+
+  await sleep(400);
+  $('#aftermath').classList.add('active');
+  $('#aftermath').scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+// ---------- WIRE UP ----------
+$('#cta-build-mine').addEventListener('click', () => {
+  $('#intake').classList.add('active');
+  $('#forge').classList.remove('active');
+  $('#aftermath').classList.remove('active');
+  resetPanels();
+  $('#intake').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => $('#f-sell').focus(), 600);
+});
+
+$('#cta-silver-spray').addEventListener('click', () => {
+  $('#intake').classList.remove('active');
+  resetPanels();
+  runForge({
+    sell: 'Premium Nautique wakesurf boats ($150K–$300K)',
+    buyer: 'Michigan lake homeowners 35–65, household income $300K+, wakesurf enthusiasts',
+    result: 'Sell one more boat per month from existing inquiry traffic',
+  });
+});
+
+$('#intake-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const inputs = {
+    sell: $('#f-sell').value.trim(),
+    buyer: $('#f-buyer').value.trim(),
+    result: $('#f-result').value.trim(),
+  };
+  if (!inputs.sell || !inputs.buyer || !inputs.result) {
+    $('#f-sell').focus();
+    return;
+  }
+  resetPanels();
+  runForge(inputs);
+});
+
+$('#btn-cancel').addEventListener('click', () => {
+  $('#intake').classList.remove('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+$('#btn-restart').addEventListener('click', () => {
+  $('#forge').classList.remove('active');
+  $('#aftermath').classList.remove('active');
+  resetPanels();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+function resetPanels() {
+  document.querySelectorAll('.panel').forEach(p => {
+    p.classList.remove('visible', 'building', 'complete');
+    const s = p.querySelector('.panel-status');
+    if (s) s.textContent = 'Forging';
+  });
+}
+
+</script>
+</body>
+</html>
